@@ -5,8 +5,8 @@ import { ArrowRight, Target, ShieldAlert, Award } from 'lucide-react';
 
 export const CompetitorMatrixView: React.FC = () => {
   const { venture, setStage } = useVenture();
-  const comp = venture.competitorAnalysis;
-  const derived = venture.derivedInsights;
+  const comp = venture.competitorAnalysis || { directCompetitors: [], indirectCompetitors: [] } as any;
+  const derived = venture.derivedInsights || {} as any;
 
   return (
     <div className="w-full min-h-screen flex flex-col justify-between pt-28 pb-16 px-6 bg-[#050505] dark:bg-[#050505] light:bg-[#F7F1E5] text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32]">
@@ -45,39 +45,51 @@ export const CompetitorMatrixView: React.FC = () => {
         {/* SPATIAL POSITIONING QUADRANT */}
         <GlassPanel padding="large" className="space-y-6">
           <div className="flex items-center justify-between text-[9px] font-mono uppercase tracking-widest text-[#A7A7AD] dark:text-[#A7A7AD] light:text-[#7D9270]">
-            <span>HIGH KITCHEN SPECIALIZATION</span>
-            <span>PREDICTIVE ACCURACY</span>
+            <span>CATEGORY SPECIALIZATION</span>
+            <span>DIFFERENTIATED EXECUTION</span>
           </div>
 
-          <div className="relative min-h-[260px] bg-[#0B0B0D]/80 dark:bg-[#0B0B0D]/80 light:bg-[#FFF9EE]/80 rounded-2xl border border-white/10 dark:border-white/10 light:border-[#E6D9C4] p-8 flex items-center justify-between">
+          <div className="relative min-h-[260px] bg-[#0B0B0D]/80 dark:bg-[#0B0B0D]/80 light:bg-[#FFF9EE]/80 rounded-2xl border border-white/10 dark:border-white/10 light:border-[#E6D9C4] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
             {/* Axis Line */}
-            <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-white/10 dark:bg-white/10 light:bg-[#304B32]/10 -translate-y-1/2" />
+            <div className="hidden md:block absolute top-1/2 left-8 right-8 h-0.5 bg-white/10 dark:bg-white/10 light:bg-[#304B32]/10 -translate-y-1/2" />
 
-            {/* Basic POS Tools */}
-            <div className="relative z-10 p-4 rounded-xl bg-[#050505] dark:bg-[#050505] light:bg-[#F7F1E5] border border-white/10 dark:border-white/10 light:border-[#E6D9C4] text-center w-48 space-y-1">
-              <span className="text-[9px] font-mono uppercase text-[#A7A7AD] dark:text-[#A7A7AD] light:text-[#7D9270] block">Basic POS Tools</span>
-              <span className="text-xs font-mono font-medium text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32] block">Reactive Stock Logging</span>
-              <span className="text-[9px] text-[#A7A7AD] block">Petpooja, Toast Module</span>
-            </div>
+            {/* Dynamic Competitor Nodes */}
+            {comp.competitorNodes.map((node, idx) => {
+              if (node.type === 'genesis') {
+                return (
+                  <div
+                    key={idx}
+                    className="relative z-10 p-5 rounded-xl bg-[#B8A7FF] dark:bg-[#B8A7FF] light:bg-[#D6AA35] text-[#050505] dark:text-[#050505] light:text-[#304B32] shadow-2xl text-center w-full md:w-56 md:transform md:-translate-y-4 space-y-1 transition-transform hover:scale-105"
+                  >
+                    <span className="text-[9px] font-mono uppercase font-bold tracking-widest block opacity-80">GENESIS POSITION</span>
+                    <span className="text-sm font-mono font-bold block truncate">{node.name}</span>
+                    <span className="text-[10px] font-mono block opacity-90 leading-tight">{node.label}</span>
+                  </div>
+                );
+              }
 
-            {/* Genesis Position (WasteWise) */}
-            <div className="relative z-10 p-5 rounded-xl bg-[#B8A7FF] dark:bg-[#B8A7FF] light:bg-[#D6AA35] text-[#050505] dark:text-[#050505] light:text-[#304B32] shadow-2xl text-center w-56 transform -translate-y-4 space-y-1">
-              <span className="text-[9px] font-mono uppercase font-bold tracking-widest block opacity-80">GENESIS POSITION</span>
-              <span className="text-sm font-mono font-bold block">Predictive Prep Guidance</span>
-              <span className="text-[10px] font-mono block opacity-90">0% Hardware Overhead</span>
-            </div>
-
-            {/* Enterprise ERPs */}
-            <div className="relative z-10 p-4 rounded-xl bg-[#050505] dark:bg-[#050505] light:bg-[#F7F1E5] border border-white/10 dark:border-white/10 light:border-[#E6D9C4] text-center w-48 space-y-1">
-              <span className="text-[9px] font-mono uppercase text-[#A7A7AD] dark:text-[#A7A7AD] light:text-[#7D9270] block">Enterprise ERPs</span>
-              <span className="text-xs font-mono font-medium text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32] block">High Cost & Complexity</span>
-              <span className="text-[9px] text-[#A7A7AD] block">Oracle MICROS, SAP</span>
-            </div>
+              return (
+                <div
+                  key={idx}
+                  className="relative z-10 p-4 rounded-xl bg-[#050505] dark:bg-[#050505] light:bg-[#F7F1E5] border border-white/10 dark:border-white/10 light:border-[#E6D9C4] text-center w-full md:w-48 space-y-1 transition-transform hover:scale-105"
+                >
+                  <span className="text-[9px] font-mono uppercase text-[#A7A7AD] dark:text-[#A7A7AD] light:text-[#7D9270] block">
+                    {node.type === 'basic' ? 'Basic Alternatives' : 'Legacy Incumbents'}
+                  </span>
+                  <span className="text-xs font-mono font-medium text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32] block truncate">
+                    {node.name}
+                  </span>
+                  <span className="text-[9px] text-[#A7A7AD] dark:text-[#A7A7AD] light:text-[#58724A] block leading-tight">
+                    {node.label}
+                  </span>
+                </div>
+              );
+            })}
           </div>
 
           <div className="flex items-center justify-between text-[9px] font-mono uppercase tracking-widest text-[#A7A7AD] dark:text-[#A7A7AD] light:text-[#7D9270]">
-            <span>GENERIC STOCK COUNTING</span>
-            <span>HIGH HARDWARE COST</span>
+            <span>GENERIC WORKAROUNDS</span>
+            <span>HIGH COMPLEXITY / COST</span>
           </div>
         </GlassPanel>
 
@@ -85,20 +97,32 @@ export const CompetitorMatrixView: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
           <div className="p-4 rounded-2xl bg-[#0B0B0D]/60 dark:bg-[#0B0B0D]/60 light:bg-[#FFF9EE]/60 border border-white/5 dark:border-white/5 light:border-[#E6D9C4] space-y-1 text-left">
             <span className="text-[9px] font-mono uppercase text-[#B8A7FF] dark:text-[#B8A7FF] light:text-[#D6AA35] block">CORE UNFAIR ADVANTAGE</span>
-            <h4 className="text-sm font-medium text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32]">POS Webhook Integration</h4>
-            <p className="text-[#A7A7AD] leading-relaxed">Auto-syncs order velocity with ingredient degradation without manual kitchen entry.</p>
+            <h4 className="text-sm font-medium text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32]">
+              {derived.keyStrength || 'Proprietary Solution Workflow'}
+            </h4>
+            <p className="text-[#A7A7AD] dark:text-[#A7A7AD] light:text-[#58724A] leading-relaxed">
+              {venture.solution.valueProposition || 'Solves critical customer friction directly without friction.'}
+            </p>
           </div>
 
           <div className="p-4 rounded-2xl bg-[#0B0B0D]/60 dark:bg-[#0B0B0D]/60 light:bg-[#FFF9EE]/60 border border-white/5 dark:border-white/5 light:border-[#E6D9C4] space-y-1 text-left">
             <span className="text-[9px] font-mono uppercase text-[#B8A7FF] dark:text-[#B8A7FF] light:text-[#D6AA35] block">OPERATIONAL SIMPLICITY</span>
-            <h4 className="text-sm font-medium text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32]">WhatsApp Daily Prep Alert</h4>
-            <p className="text-[#A7A7AD] leading-relaxed">Delivers 1-tap morning prep guidance straight to the head chef's phone.</p>
+            <h4 className="text-sm font-medium text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32]">
+              Frictionless Customer Workflow
+            </h4>
+            <p className="text-[#A7A7AD] dark:text-[#A7A7AD] light:text-[#58724A] leading-relaxed">
+              Designed around operational constraint: {venture.targetCustomers.operationalConstraints || 'Minimal overhead adoption.'}
+            </p>
           </div>
 
           <div className="p-4 rounded-2xl bg-[#0B0B0D]/60 dark:bg-[#0B0B0D]/60 light:bg-[#FFF9EE]/60 border border-white/5 dark:border-white/5 light:border-[#E6D9C4] space-y-1 text-left">
-            <span className="text-[9px] font-mono uppercase text-[#B8A7FF] dark:text-[#B8A7FF] light:text-[#D6AA35] block">ROI SPEED</span>
-            <h4 className="text-sm font-medium text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32]">30-Day Payback Guarantee</h4>
-            <p className="text-[#A7A7AD] leading-relaxed">Proves ₹25,000 monthly ingredient savings within first month of deployment.</p>
+            <span className="text-[9px] font-mono uppercase text-[#B8A7FF] dark:text-[#B8A7FF] light:text-[#D6AA35] block">RAPID VALUE PROOF</span>
+            <h4 className="text-sm font-medium text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32]">
+              Direct Economic Recovery
+            </h4>
+            <p className="text-[#A7A7AD] dark:text-[#A7A7AD] light:text-[#58724A] leading-relaxed">
+              Measurable ROI demonstrated quickly against alternatives: {venture.problem.currentWorkarounds || 'Manual spreadsheets'}.
+            </p>
           </div>
         </div>
 

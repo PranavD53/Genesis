@@ -7,7 +7,7 @@ import {
   SolutionDetails,
   TargetCustomerDetails
 } from '../types/venture';
-import { initialMockVentureState } from '../data/mockVentureData';
+import { initialMockVentureState, emptyVentureState } from '../data/mockVentureData';
 import { submitVentureInput, refineVentureField } from '../services/api';
 
 interface VentureContextType {
@@ -21,14 +21,14 @@ interface VentureContextType {
   updateTargetCustomers: (customers: Partial<TargetCustomerDetails>) => void;
   submitInitialFlow: () => Promise<void>;
   refineContext: (fieldName: string, newValue: string) => Promise<void>;
-  resetVenture: () => void;
+  resetVenture: (targetStage?: VentureEvolutionStage) => void;
   loadDemoVenture: () => void;
 }
 
 const VentureContext = createContext<VentureContextType | undefined>(undefined);
 
 export const VentureProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [venture, setVenture] = useState<VentureState>(initialMockVentureState);
+  const [venture, setVenture] = useState<VentureState>(emptyVentureState);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   const setStage = (stage: VentureEvolutionStage) => {
@@ -92,28 +92,20 @@ export const VentureProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   };
 
-  const resetVenture = () => {
+  const resetVenture = (targetStage: VentureEvolutionStage = 'opening') => {
     setVenture({
-      ...initialMockVentureState,
-      currentStage: 'opening',
-      startupDetails: {
-        name: '',
-        idea: '',
-        description: '',
-        industry: '',
-        stage: 'Concept',
-        location: ''
-      },
-      problem: { statement: '', affectedAudience: '', context: '', currentWorkarounds: '' },
-      solution: { proposedSolution: '', coreFeatures: [], valueProposition: '' },
-      targetCustomers: { primarySegment: '', buyerPersona: '', coreNeeds: [], operationalConstraints: '' },
-      businessDNA: { ...initialMockVentureState.businessDNA, isConstructed: false }
+      ...emptyVentureState,
+      currentStage: targetStage
     });
   };
 
   const loadDemoVenture = () => {
-    setVenture(initialMockVentureState);
+    setVenture({
+      ...initialMockVentureState,
+      currentStage: 'dna'
+    });
   };
+
 
   return (
     <VentureContext.Provider

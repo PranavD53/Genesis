@@ -124,3 +124,86 @@ export const initialMockVentureState: VentureState = {
   ],
   refinementHistory: []
 };
+
+export const emptyVentureState: VentureState = {
+  currentStage: 'opening',
+  isDemoMode: false,
+  startupDetails: {
+    name: '',
+    idea: '',
+    description: '',
+    industry: '',
+    stage: 'Concept',
+    location: ''
+  },
+  problem: {
+    statement: '',
+    affectedAudience: '',
+    context: '',
+    currentWorkarounds: ''
+  },
+  solution: {
+    proposedSolution: '',
+    coreFeatures: [],
+    valueProposition: ''
+  },
+  targetCustomers: {
+    primarySegment: '',
+    buyerPersona: '',
+    coreNeeds: [],
+    operationalConstraints: ''
+  },
+  businessDNA: {
+    coreAttributes: {
+      problemSummary: '',
+      solutionSummary: '',
+      targetCustomerSummary: '',
+      valuePropSummary: '',
+      industrySector: '',
+      primaryRevenueModel: ''
+    },
+    assumptions: [],
+    constraints: [],
+    isConstructed: false,
+    lastUpdated: new Date().toISOString().split('T')[0]
+  },
+  derivedInsights: {
+    problemInsight: '',
+    customerInsight: '',
+    marketThesis: '',
+    positioningGap: '',
+    monetizationFlow: '',
+    economicOutlook: '',
+    baseRunway: '',
+    verdict: 'PROMISING',
+    verdictRationale: '',
+    keyStrength: '',
+    keyConstraint: '',
+    nextActions: []
+  },
+  marketAnalysis: {
+    tam: '',
+    sam: '',
+    som: '',
+    attractivenessAssessment: ''
+  },
+  competitorAnalysis: {
+    positioningSummary: '',
+    competitorNodes: []
+  },
+  businessModel: {
+    flowSteps: [],
+    summary: ''
+  },
+  financialProfile: {
+    baseRunway: '',
+    baseVenueTarget: 0,
+    capitalRequired: '',
+    scenarios: []
+  },
+  riskOpportunity: {
+    topRisks: []
+  },
+  signals: [],
+  refinementHistory: []
+};

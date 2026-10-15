@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface TransitionScreenProps {
   label: string;
@@ -12,12 +12,15 @@ export const TransitionScreen: React.FC<TransitionScreenProps> = ({
   onComplete,
   durationMs = 600
 }) => {
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      onComplete();
+      onCompleteRef.current();
     }, durationMs);
     return () => clearTimeout(timer);
-  }, [onComplete, durationMs]);
+  }, [durationMs]);
 
   return (
     <div className="fixed inset-0 z-50 bg-[#050505] dark:bg-[#050505] light:bg-[#F7F1E5] flex flex-col items-center justify-center p-6 text-center transition-opacity duration-300">

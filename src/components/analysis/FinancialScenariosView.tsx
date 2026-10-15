@@ -5,8 +5,8 @@ import { ArrowRight, ChevronDown, ChevronUp, TrendingUp, DollarSign } from 'luci
 
 export const FinancialScenariosView: React.FC = () => {
   const { venture, setStage } = useVenture();
-  const fin = venture.financialProfile;
-  const derived = venture.derivedInsights;
+  const fin = venture.financialProfile || {} as any;
+  const derived = venture.derivedInsights || {} as any;
   const [showAlternativeScenarios, setShowAlternativeScenarios] = useState(true);
 
   return (
@@ -47,10 +47,10 @@ export const FinancialScenariosView: React.FC = () => {
         <div className="flex flex-wrap items-center justify-between gap-6 p-6 rounded-2xl bg-[#0B0B0D]/80 dark:bg-[#0B0B0D]/80 light:bg-[#FFF9EE]/80 border border-white/10 dark:border-white/10 light:border-[#E6D9C4] font-mono">
           <div className="space-y-1">
             <span className="text-[9px] uppercase tracking-widest text-[#A7A7AD] dark:text-[#A7A7AD] light:text-[#7D9270] block">
-              INITIAL CAPITAL <span className="text-[8px] opacity-70">[User-provided]</span>
+              INITIAL CAPITAL <span className="text-[8px] opacity-70">[Estimated]</span>
             </span>
             <span className="text-2xl font-bold text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32]">
-              ₹45 Lakhs
+              {fin.capitalRequired || '₹45 Lakhs'}
             </span>
           </div>
 
@@ -61,7 +61,7 @@ export const FinancialScenariosView: React.FC = () => {
               TARGET RUNWAY <span className="text-[8px] opacity-70">[Projected]</span>
             </span>
             <span className="text-2xl font-bold text-[#B8A7FF] dark:text-[#B8A7FF] light:text-[#D6AA35]">
-              12 Months
+              {fin.baseRunway || '12 Months'}
             </span>
           </div>
 
@@ -69,10 +69,10 @@ export const FinancialScenariosView: React.FC = () => {
 
           <div className="space-y-1">
             <span className="text-[9px] uppercase tracking-widest text-[#A7A7AD] dark:text-[#A7A7AD] light:text-[#7D9270] block">
-              TARGET VENUES <span className="text-[8px] opacity-70">[Target]</span>
+              TARGET CUSTOMERS <span className="text-[8px] opacity-70">[Target]</span>
             </span>
             <span className="text-2xl font-bold text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32]">
-              100 Venues
+              {fin.baseVenueTarget || 100} Units
             </span>
           </div>
 
@@ -83,7 +83,7 @@ export const FinancialScenariosView: React.FC = () => {
               EST. BREAK-EVEN <span className="text-[8px] opacity-70">[Estimated]</span>
             </span>
             <span className="text-2xl font-bold text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32]">
-              Month 14
+              {fin.scenarios?.[1]?.breakEvenMonths ? `Month ${fin.scenarios[1].breakEvenMonths}` : 'Month 14'}
             </span>
           </div>
         </div>

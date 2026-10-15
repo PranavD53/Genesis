@@ -2,7 +2,7 @@ import React from 'react';
 
 export const AmbientGlow: React.FC = () => {
   return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden print:hidden">
       {/* Top Subtle Lilac / Yellow Halo */}
       <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#B8A7FF]/10 dark:bg-[#B8A7FF]/10 light:bg-[#D6AA35]/10 rounded-full blur-[160px]" />
       

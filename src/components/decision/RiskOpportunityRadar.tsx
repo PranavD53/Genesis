@@ -5,8 +5,8 @@ import { ArrowRight, ShieldCheck, AlertTriangle, Award, CheckCircle2 } from 'luc
 
 export const RiskOpportunityRadar: React.FC = () => {
   const { venture, setStage } = useVenture();
-  const derived = venture.derivedInsights;
-  const risks = venture.riskOpportunity.topRisks;
+  const derived = venture.derivedInsights || {} as any;
+  const risks = venture.riskOpportunity?.topRisks || [];
 
   return (
     <div className="w-full min-h-screen flex flex-col justify-between pt-28 pb-16 px-6 bg-[#050505] dark:bg-[#050505] light:bg-[#F7F1E5] text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32]">

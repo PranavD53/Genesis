@@ -1,75 +1,106 @@
-import { VentureState, StartupDetails, ProblemDetails, SolutionDetails, TargetCustomerDetails } from '../types/venture';
-import { initialMockVentureState } from '../data/mockVentureData';
+import {
+  VentureState,
+  StartupDetails,
+  ProblemDetails,
+  SolutionDetails,
+  TargetCustomerDetails
+} from '../types/venture';
+import {
+  generateFullVentureAnalysis,
+  recalibrateVentureWithAI,
+  askCofounderAI,
+  currentActiveProvider
+} from './aiEngine';
+import {
+  saveVentureToSupabase,
+  saveRefinementToSupabase,
+  saveCofounderMessageToSupabase,
+  fetchCofounderMessagesFromSupabase,
+  isSupabaseConfigured
+} from './supabaseClient';
 
-const USE_MOCK_API = true; // Toggle for FastAPI integration
+export { currentActiveProvider, isSupabaseConfigured };
 
+/**
+ * Real-time synthesis of complete venture intelligence from user prompt
+ */
 export async function submitVentureInput(data: {
   startupDetails: StartupDetails;
   problem: ProblemDetails;
   solution: SolutionDetails;
   targetCustomers: TargetCustomerDetails;
 }): Promise<VentureState> {
-  if (USE_MOCK_API) {
-    // Simulate backend processing time
-    await new Promise(resolve => setTimeout(resolve, 800));
-    return {
-      ...initialMockVentureState,
-      startupDetails: data.startupDetails,
-      problem: data.problem,
-      solution: data.solution,
-      targetCustomers: data.targetCustomers,
-      businessDNA: {
-        ...initialMockVentureState.businessDNA,
-        coreAttributes: {
-          problemSummary: data.problem.statement || initialMockVentureState.businessDNA.coreAttributes.problemSummary,
-          solutionSummary: data.solution.proposedSolution || initialMockVentureState.businessDNA.coreAttributes.solutionSummary,
-          targetCustomerSummary: data.targetCustomers.primarySegment || initialMockVentureState.businessDNA.coreAttributes.targetCustomerSummary,
-          valuePropSummary: data.solution.valueProposition || initialMockVentureState.businessDNA.coreAttributes.valuePropSummary,
-          industrySector: data.startupDetails.industry || initialMockVentureState.businessDNA.coreAttributes.industrySector,
-          primaryRevenueModel: initialMockVentureState.businessDNA.coreAttributes.primaryRevenueModel
-        },
-        isConstructed: true,
-        lastUpdated: new Date().toISOString().split('T')[0]
-      }
-    };
+  // 1. Generate full intelligence via Dual-API AI Engine (Gemini -> Groq -> Synthesized)
+  const ventureState = await generateFullVentureAnalysis(data);
+
+  // 2. Persist to Supabase if credentials are provided
+  try {
+    const supabaseId = await saveVentureToSupabase(ventureState);
+    if (supabaseId) {
+      (ventureState as any).id = supabaseId;
+    }
+  } catch (err) {
+    console.warn('Supabase persistence notice:', err);
   }
 
-  // Real FastAPI call structure
-  const response = await fetch('/api/v1/venture/input', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  });
-  if (!response.ok) throw new Error('Backend FastAPI submission failed');
-  return response.json();
+  return ventureState;
 }
 
+/**
+ * Real-time recalibration when founder refines an attribute
+ */
 export async function refineVentureField(
   ventureState: VentureState,
   fieldName: string,
   newValue: string
 ): Promise<VentureState> {
-  if (USE_MOCK_API) {
-    await new Promise(resolve => setTimeout(resolve, 600));
-    const newLog = {
-      id: `ref-${Date.now()}`,
-      timestamp: new Date().toISOString().replace('T', ' ').substring(0, 16),
-      changedField: fieldName,
-      previousValue: 'Previous configuration',
-      newValue: newValue,
-      reAnalysisSummary: `Re-evaluated Business DNA based on updated ${fieldName}. Analysis model recalibrated context.`
-    };
+  // 1. Recalibrate via Dual-API AI Engine
+  const recalibrated = await recalibrateVentureWithAI(ventureState, fieldName, newValue);
 
-    return {
-      ...ventureState,
-      refinementHistory: [newLog, ...ventureState.refinementHistory]
-    };
+  // 2. Persist log to Supabase
+  try {
+    const ventureId = (ventureState as any)?.id || null;
+    if (ventureId && recalibrated.refinementHistory.length > 0) {
+      await saveRefinementToSupabase(ventureId, recalibrated.refinementHistory[0]);
+    }
+  } catch (err) {
+    console.warn('Supabase refinement logging notice:', err);
   }
 
-  const response = await fetch('/api/v1/venture/refine', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fieldName, newValue })
-  });
-  return response.json();
+  return recalibrated;
+}
+
+/**
+ * Interactive Cofounder Chat Query
+ */
+export async function queryCofounder(
+  message: string,
+  venture: VentureState,
+  history: Array<{ role: 'user' | 'assistant'; content: string }> = []
+): Promise<string> {
+  const ventureId = (venture as any)?.id || null;
+
+  // 1. Save user query to Supabase
+  if (ventureId) {
+    saveCofounderMessageToSupabase(ventureId, 'user', message).catch(() => {});
+  }
+
+  // 2. Generate AI response
+  const aiReply = await askCofounderAI(message, venture, history);
+
+  // 3. Save assistant response to Supabase
+  if (ventureId) {
+    saveCofounderMessageToSupabase(ventureId, 'assistant', aiReply).catch(() => {});
+  }
+
+  return aiReply;
+}
+
+/**
+ * Fetch saved cofounder messages from Supabase
+ */
+export async function getCofounderHistory(
+  ventureId: string | null
+): Promise<Array<{ role: 'user' | 'assistant'; content: string; created_at: string }>> {
+  return fetchCofounderMessagesFromSupabase(ventureId);
 }

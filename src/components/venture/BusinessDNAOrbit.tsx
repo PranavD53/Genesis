@@ -5,17 +5,17 @@ import { ArrowRight, Edit3, Compass, CheckCircle2, AlertCircle } from 'lucide-re
 
 export const BusinessDNAOrbit: React.FC = () => {
   const { venture, setStage, refineContext } = useVenture();
-  const derived = venture.derivedInsights;
+  const derived = venture.derivedInsights || {} as any;
   const [selectedAttribute, setSelectedAttribute] = useState<string>('problemSummary');
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<string>('');
 
   const dnaNodes = [
-    { key: 'problemSummary', label: 'Problem', val: venture.businessDNA.coreAttributes.problemSummary },
-    { key: 'solutionSummary', label: 'Solution', val: venture.businessDNA.coreAttributes.solutionSummary },
-    { key: 'targetCustomerSummary', label: 'Customer', val: venture.businessDNA.coreAttributes.targetCustomerSummary },
-    { key: 'valuePropSummary', label: 'Value Prop', val: venture.businessDNA.coreAttributes.valuePropSummary },
-    { key: 'industrySector', label: 'Industry', val: venture.businessDNA.coreAttributes.industrySector }
+    { key: 'problemSummary', label: 'Problem', val: venture.businessDNA?.coreAttributes?.problemSummary || 'Analyzing problem statement...' },
+    { key: 'solutionSummary', label: 'Solution', val: venture.businessDNA?.coreAttributes?.solutionSummary || 'Formulating core solution...' },
+    { key: 'targetCustomerSummary', label: 'Customer', val: venture.businessDNA?.coreAttributes?.targetCustomerSummary || 'Identifying initial customer...' },
+    { key: 'valuePropSummary', label: 'Value Prop', val: venture.businessDNA?.coreAttributes?.valuePropSummary || 'Structuring value proposition...' },
+    { key: 'industrySector', label: 'Industry', val: venture.businessDNA?.coreAttributes?.industrySector || 'Mapping sector dynamics...' }
   ];
 
   const handleSaveEdit = async () => {

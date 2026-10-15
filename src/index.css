@@ -246,3 +246,163 @@ html.light textarea::placeholder {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ============================================================ */
+/* AI COFOUNDER CHAT MARKDOWN STYLING                           */
+/* ============================================================ */
+.chat-markdown-content {
+  font-family: inherit;
+}
+.chat-markdown-content p {
+  margin-bottom: 0.6rem;
+}
+.chat-markdown-content p:last-child {
+  margin-bottom: 0;
+}
+.chat-markdown-content strong,
+.chat-markdown-content b {
+  font-weight: 700;
+  color: #FFFFFF;
+}
+html.light .chat-markdown-content strong,
+html.light .chat-markdown-content b {
+  color: #1C3B2B;
+}
+.chat-markdown-content ul {
+  list-style-type: disc;
+  padding-left: 1.25rem;
+  margin-top: 0.35rem;
+  margin-bottom: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.chat-markdown-content ol {
+  list-style-type: decimal;
+  padding-left: 1.25rem;
+  margin-top: 0.35rem;
+  margin-bottom: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.chat-markdown-content li {
+  line-height: 1.5;
+}
+.chat-markdown-content code {
+  font-family: monospace;
+  font-size: 0.85em;
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.25rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #B8A7FF;
+}
+html.light .chat-markdown-content code {
+  background-color: rgba(0, 0, 0, 0.06);
+  color: #65A30D;
+}
+.chat-markdown-content pre {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background-color: #050505;
+  overflow-x: auto;
+  margin: 0.5rem 0;
+}
+.chat-markdown-content h1,
+.chat-markdown-content h2,
+.chat-markdown-content h3,
+.chat-markdown-content h4 {
+  font-weight: 700;
+  margin-top: 0.6rem;
+  margin-bottom: 0.25rem;
+  color: #F5F5F5;
+}
+html.light .chat-markdown-content h1,
+html.light .chat-markdown-content h2,
+html.light .chat-markdown-content h3,
+html.light .chat-markdown-content h4 {
+  color: #1C3B2B;
+}
+
+/* ============================================================ */
+/* PRINT ENGINE STYLES (@media print)                           */
+/* Clean, professional executive venture document layout        */
+/* ============================================================ */
+@media print {
+  @page {
+    margin: 1.2cm;
+    size: A4 portrait;
+  }
+
+  body, html, #root, main {
+    background: #ffffff !important;
+    color: #111827 !important;
+    font-size: 10.5pt !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Completely hide floating header, drawers, interactive buttons, background canvases */
+  header,
+  nav,
+  button,
+  .print\:hidden,
+  .print-hidden,
+  [data-print-hide="true"] {
+    display: none !important;
+  }
+
+  /* Reset main container spacing for document output */
+  main, div {
+    overflow: visible !important;
+  }
+
+  main {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    min-height: auto !important;
+  }
+
+  /* High contrast typography for print */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  .text-\[\#F5F5F5\],
+  .text-\[\#A7A7AD\],
+  .text-\[\#D1D1D6\],
+  .text-white {
+    color: #1F2937 !important;
+  }
+
+  .text-\[\#B8A7FF\],
+  .text-\[\#8C6D15\],
+  .text-\[\#65A30D\] {
+    color: #4338CA !important;
+    font-weight: 600 !important;
+  }
+
+  /* Crisp cards and borders for paper output */
+  .bg-\[\#050505\],
+  .bg-\[\#0B0B0D\],
+  .bg-\[\#050505\]\/80,
+  .bg-\[\#0B0B0D\]\/80,
+  .bg-\[\#0B0B0D\]\/90,
+  .bg-\[\#050505\]\/70 {
+    background-color: #F9FAFB !important;
+    border: 1px solid #D1D5DB !important;
+    color: #111827 !important;
+    break-inside: avoid;
+  }
+
+  .border-white\/10,
+  .border-white\/15,
+  .border-white\/20,
+  .border-white\/5 {
+    border-color: #D1D5DB !important;
+  }
+
+  .break-inside-avoid {
+    break-inside: avoid !important;
+  }
+}

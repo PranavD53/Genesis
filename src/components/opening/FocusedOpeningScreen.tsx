@@ -1,12 +1,24 @@
 import React from 'react';
 import { useVenture } from '../../context/VentureContext';
+import { useAuth } from '../../context/AuthContext';
 import { GradientText } from '../common/GradientText';
 import { AnimatedVentureNeuralCanvas, ConnectedArchitectureVisual } from '../common/EternaCloudVisuals';
 import { Reveal } from '../common/Reveal';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
 export const FocusedOpeningScreen: React.FC = () => {
-  const { setStage, loadDemoVenture } = useVenture();
+  const { setStage, loadDemoVenture, resetVenture } = useVenture();
+  const { user, openAuthModal } = useAuth();
+
+  const handleStartVenture = () => {
+    if (!user) {
+      openAuthModal('register', () => {
+        resetVenture('input-1');
+      });
+      return;
+    }
+    resetVenture('input-1');
+  };
 
   return (
     <div className="w-full min-h-screen bg-[#050505] dark:bg-[#050505] light:bg-[#F7F1E5] text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#1C3B2B] space-y-16 lg:space-y-20 pt-24 pb-16 px-4 sm:px-12 overflow-x-hidden transition-colors duration-300">
@@ -51,7 +63,7 @@ export const FocusedOpeningScreen: React.FC = () => {
           <Reveal delay={270} direction="up">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <button
-                onClick={() => setStage('input-1')}
+                onClick={handleStartVenture}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-9 py-3.5 rounded-full text-xs font-mono font-medium tracking-wider uppercase bg-[#B8A7FF] dark:bg-[#B8A7FF] light:bg-[#FACC15] text-[#050505] dark:text-[#050505] light:text-[#1C3B2B] shadow-2xl shadow-[#B8A7FF]/20 dark:shadow-[#B8A7FF]/20 light:shadow-[#FACC15]/30 transition-all hover:scale-105 active:scale-95"
               >
                 <Sparkles className="w-4 h-4" />
@@ -60,7 +72,10 @@ export const FocusedOpeningScreen: React.FC = () => {
               </button>
 
               <button
-                onClick={loadDemoVenture}
+                onClick={() => {
+                  const el = document.getElementById('workflow');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-xs font-mono font-medium tracking-wider uppercase bg-[#0B0B0D] dark:bg-[#0B0B0D] light:bg-[#FFF9EE] border border-white/10 dark:border-white/10 light:border-[#E6D9C4] text-[#A7A7AD] dark:text-[#A7A7AD] light:text-[#304B32] hover:text-[#F5F5F5] dark:hover:text-[#F5F5F5] light:hover:text-[#1C3B2B] transition-colors"
               >
                 EXPLORE GENESIS
@@ -243,7 +258,7 @@ export const FocusedOpeningScreen: React.FC = () => {
         <Reveal delay={120} direction="up">
           <div>
             <button
-              onClick={() => setStage('input-1')}
+              onClick={handleStartVenture}
               className="inline-flex items-center gap-2 px-9 py-4 rounded-full text-xs font-mono font-medium tracking-wider uppercase bg-[#B8A7FF] dark:bg-[#B8A7FF] light:bg-[#FACC15] text-[#050505] dark:text-[#050505] light:text-[#1C3B2B] shadow-2xl transition-all hover:scale-105 active:scale-95"
             >
               START YOUR VENTURE

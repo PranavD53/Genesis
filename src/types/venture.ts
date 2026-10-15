@@ -82,6 +82,15 @@ export type VentureEvolutionStage =
   | 'roadmap'
   | 'strategy';
 
+export interface RefinementLog {
+  id?: string;
+  timestamp: string;
+  changedField: string;
+  previousValue?: string;
+  newValue: string;
+  reAnalysisSummary?: string;
+}
+
 export interface VentureState {
   currentStage: VentureEvolutionStage;
   startupDetails: StartupDetails;
@@ -121,6 +130,7 @@ export interface VentureState {
     relevanceImpact: string;
     suggestedAction: string;
   }>;
-  refinementHistory: Array<{ timestamp: string; changedField: string; newValue: string }>;
+  refinementHistory: RefinementLog[];
   isDemoMode: boolean;
 }
+

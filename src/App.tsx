@@ -15,6 +15,11 @@ import { FinancialScenariosView } from './components/analysis/FinancialScenarios
 import { RiskOpportunityRadar } from './components/decision/RiskOpportunityRadar';
 import { FinalVentureArtifact } from './components/roadmap/FinalVentureArtifact';
 import { ContinuousSignalFeed } from './components/intelligence/ContinuousSignalFeed';
+import { CofounderDrawer } from './components/cofounder/CofounderDrawer';
+import { AuthProvider } from './context/AuthContext';
+import { AuthModal } from './components/auth/AuthModal';
+import { AccountSettingsModal } from './components/auth/AccountSettingsModal';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 
 const MainContent: React.FC = () => {
   const { currentStage, setStage } = useVenture();
@@ -53,6 +58,7 @@ const MainContent: React.FC = () => {
       {currentStage === 'trans-dna' && (
         <TransitionScreen
           label="Constructing Business DNA…"
+          durationMs={900}
           onComplete={() => setStage('dna')}
         />
       )}
@@ -117,18 +123,33 @@ const MainContent: React.FC = () => {
   );
 };
 
+const AppLayout: React.FC = () => {
+  const { currentStage } = useVenture();
+
+  return (
+    <div className="relative min-h-screen font-sans text-slate-900 dark:text-white bg-[#050505] dark:bg-[#050505] light:bg-[#F7F1E5] transition-colors duration-300 overflow-x-hidden">
+      <AmbientGlow />
+      <FlowingLinesBackground />
+      <FloatingNavBar />
+      <MainContent />
+      {currentStage !== 'opening' && <CofounderDrawer />}
+      <AuthModal />
+      <AccountSettingsModal />
+    </div>
+  );
+};
+
 export function App() {
   return (
-    <ThemeProvider>
-      <VentureProvider>
-        <div className="relative min-h-screen font-sans text-slate-900 dark:text-white bg-[#050505] dark:bg-[#050505] light:bg-[#F7F1E5] transition-colors duration-300 overflow-x-hidden">
-          <AmbientGlow />
-          <FlowingLinesBackground />
-          <FloatingNavBar />
-          <MainContent />
-        </div>
-      </VentureProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <AuthProvider>
+          <VentureProvider>
+            <AppLayout />
+          </VentureProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

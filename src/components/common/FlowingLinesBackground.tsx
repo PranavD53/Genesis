@@ -2,7 +2,7 @@ import React from 'react';
 
 export const FlowingLinesBackground: React.FC = () => {
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 opacity-25">
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 opacity-25 print:hidden">
       <svg
         className="w-full h-full min-h-[100vh]"
         viewBox="0 0 1440 900"

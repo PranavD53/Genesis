@@ -5,16 +5,46 @@ import { Printer, SlidersHorizontal, ArrowRight, CheckCircle2, Flag } from 'luci
 
 export const FinalVentureArtifact: React.FC = () => {
   const { venture, refineContext, setStage } = useVenture();
-  const derived = venture.derivedInsights;
+  const derived = venture.derivedInsights || {} as any;
   const [showRefinementModal, setShowRefinementModal] = useState(false);
   const [refineField, setRefineField] = useState('Target Customers');
   const [refineVal, setRefineVal] = useState('');
 
+  const isDefaultDemo = venture.isDemoMode;
+
   const roadmapSteps = [
-    { num: '01', title: 'VALIDATE', action: 'WhatsApp daily prep alert pilot with 10 venues', timeline: 'Month 1-3' },
-    { num: '02', title: 'PILOT', action: 'Prove ₹25,000 monthly food savings per venue', timeline: 'Month 4-6' },
-    { num: '03', title: 'INTEGRATE', action: 'Petpooja & UrbanPiper POS webhook connectors', timeline: 'Month 7-9' },
-    { num: '04', title: 'EXPAND', action: 'Scale to 100 paying venues across Tier-1 hubs', timeline: 'Month 10-14' }
+    {
+      num: '01',
+      title: 'VALIDATE',
+      action: isDefaultDemo
+        ? 'WhatsApp daily prep alert pilot with 10 venues'
+        : `Pilot core value proposition with initial ${venture.targetCustomers?.primarySegment || 'target customers'}`,
+      timeline: 'Month 1-3'
+    },
+    {
+      num: '02',
+      title: 'PILOT',
+      action: isDefaultDemo
+        ? 'Prove ₹25,000 monthly food savings per venue'
+        : `Demonstrate quantifiable ROI: ${venture.solution.valueProposition || 'measured efficiency gains'}`,
+      timeline: 'Month 4-6'
+    },
+    {
+      num: '03',
+      title: 'INTEGRATE',
+      action: isDefaultDemo
+        ? 'Petpooja & UrbanPiper POS webhook connectors'
+        : `Automate core workflow connectors: ${venture.problem.currentWorkarounds ? `replace ${venture.problem.currentWorkarounds}` : 'seamless integration'}`,
+      timeline: 'Month 7-9'
+    },
+    {
+      num: '04',
+      title: 'EXPAND',
+      action: isDefaultDemo
+        ? 'Scale to 100 paying venues across Tier-1 hubs'
+        : `Scale to ${venture.financialProfile.baseVenueTarget || 100} paying customers across primary market`,
+      timeline: 'Month 10-14'
+    }
   ];
 
   const handleRefineSubmit = async () => {
@@ -26,21 +56,42 @@ export const FinalVentureArtifact: React.FC = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col justify-between pt-28 pb-20 px-6 bg-[#050505] dark:bg-[#050505] light:bg-[#F7F1E5] text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32]">
-      <div className="w-full max-w-6xl mx-auto space-y-12 text-left">
+    <div className="w-full min-h-screen flex flex-col justify-between pt-28 pb-20 px-6 print:pt-4 print:pb-4 print:min-h-0 print:px-0 bg-[#050505] dark:bg-[#050505] light:bg-[#F7F1E5] text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32]">
+      <div className="w-full max-w-6xl mx-auto space-y-12 print:space-y-6 text-left">
         
+        {/* PRINT ONLY: Executive Document Header */}
+        <div className="hidden print:block border-b-2 border-gray-900 pb-4 mb-4">
+          <div className="flex justify-between items-end">
+            <div>
+              <div className="text-xs uppercase tracking-widest text-indigo-700 font-bold">
+                GENESIS VENTURE INTELLIGENCE BRIEF
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900 mt-1">
+                {venture.startupDetails.name || 'Executive Venture Strategy'}
+              </h1>
+              <div className="text-xs text-gray-600 mt-0.5">
+                Sector: {venture.startupDetails.industry || 'B2B SaaS / Technology'} • Stage: {venture.startupDetails.stage || 'Concept'}
+              </div>
+            </div>
+            <div className="text-right text-xs text-gray-500">
+              <span>Date: {new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+              <div className="text-[10px] text-gray-400">Confidential Founder Brief</div>
+            </div>
+          </div>
+        </div>
+
         {/* Stage Header & Actions */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-white/10 dark:border-white/10 light:border-[#E6D9C4] pb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-white/10 dark:border-white/10 light:border-[#E6D9C4] pb-6 print:pb-3">
           <div className="space-y-1">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#B8A7FF] dark:text-[#B8A7FF] light:text-[#D6AA35]">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[#B8A7FF] dark:text-[#B8A7FF] light:text-[#D6AA35] print:text-indigo-700">
               STAGE 07 / EXECUTION ROADMAP ARTIFACT
             </span>
-            <h1 className="text-3xl font-medium tracking-tight text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32]">
+            <h1 className="text-3xl font-medium tracking-tight text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32] print:text-gray-900 print:text-2xl">
               WHAT TO DO NEXT.
             </h1>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 print:hidden">
             <button
               onClick={() => setShowRefinementModal(true)}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-mono font-medium bg-[#0B0B0D] dark:bg-[#0B0B0D] light:bg-[#FFF9EE] border border-white/10 dark:border-white/10 light:border-[#E6D9C4] text-[#A7A7AD] dark:text-[#A7A7AD] light:text-[#58724A] hover:text-[#F5F5F5]"
@@ -74,7 +125,7 @@ export const FinalVentureArtifact: React.FC = () => {
                     <span>{step.timeline}</span>
                   </div>
                   <span className="text-xs font-bold text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32] uppercase block">{step.title}</span>
-                  <p className="text-xs text-[#A7A7AD] leading-relaxed mt-2">{step.action}</p>
+                  <p className="text-xs text-[#A7A7AD] dark:text-[#A7A7AD] light:text-[#58724A] leading-relaxed mt-2">{step.action}</p>
                 </div>
               </div>
             ))}
@@ -101,22 +152,32 @@ export const FinalVentureArtifact: React.FC = () => {
         </div>
 
         {/* BOTTOM NAVIGATION / START AGAIN */}
-        <div className="flex justify-between items-center pt-8 border-t border-white/10 dark:border-white/10 light:border-[#E6D9C4]">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-8 border-t border-white/10 dark:border-white/10 light:border-[#E6D9C4] print:hidden">
           <span className="text-xs font-mono text-[#A7A7AD] dark:text-[#A7A7AD] light:text-[#7D9270]">
             Complete Venture Intelligence Workflow Finished
           </span>
 
-          <button
-            onClick={() => setStage('opening')}
-            className="inline-flex items-center gap-2 px-8 py-3 rounded-full text-xs font-mono font-medium tracking-wider uppercase bg-[#B8A7FF] dark:bg-[#B8A7FF] light:bg-[#D6AA35] text-[#050505] dark:text-[#050505] light:text-[#304B32] shadow-xl transition-all hover:scale-105"
-          >
-            RETURN TO LANDING PAGE
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setStage('strategy')}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-mono font-medium tracking-wider uppercase bg-[#0B0B0D] dark:bg-[#0B0B0D] light:bg-[#FFF9EE] border border-white/10 dark:border-white/10 light:border-[#E6D9C4] text-[#B8A7FF] dark:text-[#B8A7FF] light:text-[#D6AA35] hover:scale-105 transition-all shadow-md"
+            >
+              CONTINUOUS SIGNALS
+              <ArrowRight className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={() => setStage('opening')}
+              className="inline-flex items-center gap-2 px-8 py-3 rounded-full text-xs font-mono font-medium tracking-wider uppercase bg-[#B8A7FF] dark:bg-[#B8A7FF] light:bg-[#D6AA35] text-[#050505] dark:text-[#050505] light:text-[#304B32] shadow-xl transition-all hover:scale-105"
+            >
+              RETURN TO LANDING PAGE
+            </button>
+          </div>
         </div>
 
         {/* Refinement Modal */}
         {showRefinementModal && (
-          <div className="fixed inset-0 z-50 bg-[#050505]/90 dark:bg-[#050505]/90 light:bg-[#F7F1E5]/90 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 bg-[#050505]/90 dark:bg-[#050505]/90 light:bg-[#F7F1E5]/90 backdrop-blur-md flex items-center justify-center p-4 print:hidden">
             <div className="w-full max-w-md bg-[#0B0B0D] dark:bg-[#0B0B0D] light:bg-[#FFF9EE] rounded-2xl p-6 border border-white/10 dark:border-white/10 light:border-[#E6D9C4] shadow-2xl space-y-4">
               <h3 className="text-base font-medium text-[#F5F5F5] dark:text-[#F5F5F5] light:text-[#304B32]">Refine Venture Context</h3>
               <p className="text-xs text-[#A7A7AD]">
